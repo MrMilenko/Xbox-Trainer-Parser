@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unsafe"
 	"log"
 )
 
@@ -42,6 +43,35 @@ type Trainer struct {
 	section      int
 }
 
+// unmangleTrainer unmangles the given buffer of size bytes.
+func unmangleTrainer(buffer unsafe.Pointer, size uint32) {
+	// Load buffer and size into registers
+	esi := uintptr(buffer)
+	ecx := uint32(size)
+
+	// Initialize registers
+	eax, ebx := uint32(0), uint32(0)
+
+	// Load values from buffer
+	eax += uint32(*(*byte)(unsafe.Pointer(esi + 0x27)))
+	eax += uint32(*(*byte)(unsafe.Pointer(esi + 0x2f)))
+	eax += uint32(*(*byte)(unsafe.Pointer(esi + 0x37)))
+	ecx = 0xffffff
+	eax *= ecx
+	*(*uint32)(unsafe.Pointer(buffer)) ^= eax
+	ebx = *(*uint32)(unsafe.Pointer(buffer))
+	esi += 4
+	eax, ecx = uint32(0), size - 4
+
+	// Loop
+	for i := uint32(0); i < ecx; i++ {
+		*(*byte)(unsafe.Pointer(esi)) ^= byte(ebx)
+		*(*byte)(unsafe.Pointer(esi)) -= byte(eax)
+		eax += 3
+		eax += ecx
+		esi++
+	}
+}
 
 // Load reads a trainer file from the given path and returns a Trainer.
 func (t *Trainer) Load(path string) error {
@@ -79,11 +109,12 @@ func (t *Trainer) Load(path string) error {
 			return fmt.Errorf("broken trainer: %s", path)
 		}
 		t.trainerData = t.data[204:]
+		unmangleTrainer(unsafe.Pointer(&t.trainerData[0]), uint32(len(t.trainerData)))
 		textLength := len(t.trainerData) - xbtfSelectionsTextOffset - xbtfSection
 		t.titleIDs = [3]uint32{binary.LittleEndian.Uint32(t.trainerData[xbtfIDList : xbtfIDList+4])}
 		t.section = int(t.trainerData[xbtfSection])
 		t.entryPoint = int(t.trainerData[xbtfEntryPoint])
-		t.options = t.trainerData[xbtfSelectionsOffset : xbtfSelectionsOffset+2]
+t.options = t.trainerData[xbtfSelectionsOffset : xbtfSelectionsOffset+2]
 		t.optionLabels = strings.Split(string(t.trainerData[xbtfSelectionsTextOffset:xbtfSelectionsTextOffset+textLength]), "\x00")
 	} else {
 		t.titleIDs = [3]uint32{
@@ -95,11 +126,8 @@ func (t *Trainer) Load(path string) error {
 		t.options = t.data[etmSelectionsOffset : etmSelectionsOffset+2]
 		t.optionLabels = strings.Split(string(t.data[etmSelectionsTextOffset:]), "\x00")
 	}
-
 	return nil
 }
-
-
 // GetNumberOfOptions returns the number of options in the trainer.
 func (t *Trainer) GetNumberOfOptions() int {
 	return len(t.optionLabels)
@@ -128,4 +156,3 @@ func main() {
 	}
 	fmt.Println(trainer)
 }
-
