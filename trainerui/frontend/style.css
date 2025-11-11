@@ -1,0 +1,84 @@
+:root {
+  --bg: #151515;
+  --bg2:#1e1e1e;
+  --fg: #ddd;
+  --muted:#9aa;
+  --accent:#8fd14f; /* Xbox-ish */
+  --border:#2a2a2a;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+}
+
+header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #181818, #141414);
+}
+
+h1 { font-size: 18px; margin: 0; letter-spacing: 0.3px; }
+
+.controls { display: flex; gap: 8px; margin-left: auto; }
+.controls input[type="text"]{
+  width: 460px; padding: 8px 10px; background: var(--bg2);
+  border: 1px solid var(--border); color: var(--fg); border-radius: 6px;
+}
+.controls button {
+  background: var(--accent); color: #0b0b0b; border: 0; padding: 8px 12px; border-radius: 6px;
+  font-weight: 600; cursor: pointer;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  height: calc(100vh - 58px);
+}
+
+aside#list {
+  border-right: 1px solid var(--border);
+  overflow: auto;
+}
+
+.item {
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  cursor: pointer; display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: center;
+}
+.item:hover { background: #1a1a1a; }
+.item.active { background: #202020; }
+
+.item img {
+  width: 64px; height: 64px; object-fit: contain; border-radius: 8px; background: #222;
+  border: 1px solid var(--border);
+}
+
+.item .title { font-weight: 600; }
+.item .sub { color: var(--muted); font-size: 12px; }
+
+section#detail {
+  padding: 16px; overflow: auto; display: grid; gap: 16px;
+}
+
+#meta {
+  display: grid; grid-template-columns: 128px 1fr; gap: 16px; align-items: center;
+}
+
+.metaimg {
+  width:128px; height:128px; object-fit: contain; border-radius: 12px; background: #222; border:1px solid var(--border);
+}
+
+.kv { display: grid; grid-template-columns: 140px 1fr; gap: 8px; }
+.kv .key { color: var(--muted); }
+.panel { background: #121212; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.panel h3 { margin: 0 0 8px 0; color: var(--muted); font-weight: 600; letter-spacing: .4px; }
+pre { white-space: pre-wrap; font-family: var(--mono); color: #cfd8cf; }

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: filesystem: https://raw.githubusercontent.com https://raw.githubusercontent.com/MobCat/MobCats-original-xbox-game-list/ https://raw.githubusercontent.com/MobCat/ 'unsafe-inline' 'unsafe-eval'"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trainer Viewer</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header>
+    <h1>Trainer Viewer</h1>
+    <div class="controls">
+      <input id="dir" type="text" placeholder="Folder with .etm/.xbtf Files" />
+      <button id="scan">Browse & Scan</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="list"></aside>
+    <section id="detail">
+      <div id="meta"></div>
+      <div class="panel">
+        <h3>Scroller</h3>
+        <pre id="scroller">(none)</pre>
+      </div>
+      <div class="panel">
+        <h3>Options</h3>
+        <pre id="options">(none)</pre>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
+
